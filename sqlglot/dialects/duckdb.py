@@ -1136,9 +1136,10 @@ class DuckDB(Dialect):
 
                 # If BQ's UNNEST is aliased, we transform it from a column alias to a table alias in DDB
                 alias = expression.args.get("alias")
-                if alias:
+                if isinstance(alias, exp.TableAlias):
                     expression.set("alias", None)
-                    alias = exp.TableAlias(this=seq_get(alias.args.get("columns"), 0))
+                    if alias.columns:
+                        alias = exp.TableAlias(this=seq_get(alias.columns, 0))
 
                 unnest_sql = super().unnest_sql(expression)
                 select = exp.Select(expressions=[unnest_sql]).subquery(alias)
@@ -1249,9 +1250,12 @@ class DuckDB(Dialect):
             return posexplode_sql
 
         def addmonths_sql(self, expression: exp.AddMonths) -> str:
-            from sqlglot.optimizer.annotate_types import annotate_types
+            this = expression.this
 
-            this = annotate_types(expression.this, dialect=self.dialect)
+            if not this.type:
+                from sqlglot.optimizer.annotate_types import annotate_types
+
+                this = annotate_types(this, dialect=self.dialect)
 
             if this.is_type(*exp.DataType.TEXT_TYPES):
                 this = exp.Cast(this=this, to=exp.DataType(this=exp.DataType.Type.TIMESTAMP))

@@ -1689,7 +1689,7 @@ class ProjectionDef(Expression):
 
 
 class TableAlias(Expression):
-    arg_types = {"this": False, "columns": False, "column_only": False}
+    arg_types = {"this": False, "columns": False}
 
     @property
     def columns(self):
@@ -7127,6 +7127,10 @@ class CovarPop(Binary, AggFunc):
 
 class Week(Func):
     arg_types = {"this": True, "mode": False}
+
+
+class WeekStart(Expression):
+    pass
 
 
 class XMLElement(Func):
