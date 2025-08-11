@@ -382,11 +382,10 @@ FROM json_data, field_ids""",
         )
         self.validate_identity(
             "SELECT TIMEZONE('UTC', CURRENT_TIMESTAMP)",
-            "SELECT CURRENT_TIMESTAMP AT TIME ZONE 'UTC'"
+            "SELECT CURRENT_TIMESTAMP AT TIME ZONE 'UTC'",
         )
         self.validate_identity(
-            "SELECT TIMEZONE(CURRENT_TIMESTAMP)",
-            "SELECT CURRENT_TIMESTAMP AT TIME ZONE LOCAL"
+            "SELECT TIMEZONE(CURRENT_TIMESTAMP)", "SELECT CURRENT_TIMESTAMP AT TIME ZONE LOCAL"
         )
 
         self.validate_all(

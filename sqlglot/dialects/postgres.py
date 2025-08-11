@@ -188,24 +188,19 @@ def _build_to_timestamp(args: t.List) -> exp.UnixToTime | exp.StrToTime:
 def _build_timezone(args: t.List) -> exp.AtTimeZone:
     # Convert TIMEZONE function to AtTimeZone expression
     # See https://www.postgresql.org/docs/current/functions-datetime.html#FUNCTIONS-DATETIME-ZONECONVERT
-    # The signature of TIMEZONE is 
+    # The signature of TIMEZONE is
     # TIMEZONE(zone, timestamp) -> `timestamp AT TIME ZONE zone`
     # TIMEZONE(timestamp) -> `timestamp AT TIME ZONE local`
 
     if len(args) == 1:
         timestamp = seq_get(args, 0)
-        return exp.AtTimeZone(
-            this=timestamp,
-            zone=exp.Identifier(this="LOCAL")
-        )
-        
+        return exp.AtTimeZone(this=timestamp, zone=exp.Identifier(this="LOCAL"))
+
     timezone = seq_get(args, 0)
     timestamp = seq_get(args, 1)
 
-    return exp.AtTimeZone(
-        this=timestamp,
-        zone=timezone
-    )
+    return exp.AtTimeZone(this=timestamp, zone=timezone)
+
 
 def _json_extract_sql(
     name: str, op: str
